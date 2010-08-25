@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="misc/misc.js"></script>
+<script type="text/javascript" src="core/Data.js"></script>
+<script type="text/javascript" src="core/Protocol.js"></script>
+<script>
+
+window.onload = function() {
+  reload();
+  chrome.tabs.onSelectionChanged.addListener(updateIcon);
+  chrome.tabs.onUpdated.addListener(function(_,changeInfo) { if(changeInfo.url) updateIcon();});
+}
+
+function reload() {
+  resetState();
+  Protocol.load(function(bms) { updateIcon(); });
+}
+
+function updateIcon() {
+  chrome.tabs.getSelected(null, function (tab) {
+    var bm = Bookmark.find(function (x) { return (x.url == tab.url) });
+    if (bm) {
+      chrome.browserAction.setIcon({ path: "icon_on.png", tabId: tab.id });
+      var tooltip = bm.title + "\n" + bm.labels.join(", ");
+      if (bm.annotation) tooltip += "\n" + bm.annotation;
+      chrome.browserAction.setTitle({ title: tooltip, tabId: tab.id });
+    }
+  });
+}
+
+</script>
+</head>
+<body>
+</body>
+</html>

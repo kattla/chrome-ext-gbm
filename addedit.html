@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="misc/misc.js"></script>
+<script type="text/javascript" src="misc/Autosuggest.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css"/>
+<link rel="stylesheet" type="text/css" href="misc/Autosuggest.css"/>
+<style>
+  html { overflow: hidden; }
+  body { background: #ddddff; }
+  form { text-align: right; margin-bottom: 0; font-size: 14px; }
+  label { vertical-align: top; }
+  input[type=text], textarea { width: 80%; margin-left: 5px; padding: 0; border: inset 2px; font-size: 12px; }
+  textarea { resize: none; }
+  div#actions { margin-top: 5px; }
+  input[type=submit], input[type=button] { }
+  #remove { float: left; }
+</style>
+<script>
+
+var BG = chrome.extension.getBackgroundPage();
+var BM = null;
+var onClose = null;
+var form = new Object();
+
+window.onload = function() {
+  var elems = document.querySelectorAll('[name]');
+  for (var i in elems) form[elems[i].name] = elems[i];
+  var alternatives = BG.Label.all.map(function(l) { return l.name });
+  new Autosuggest(new Autosuggest.SeparatedInput(form.labels), alternatives);
+}
+
+function setBM(bm) {
+  BM = bm;
+  form.url.value = BM.url;
+  form.title.value = BM.title;
+  form.annotation.value = BM.annotation || "";
+  //form.labels.value = BM.labels.reduceRight(function(a,b) { return b.name+", "+(a.name||a) },"");
+  form.labels.value = BM.labels.join(", ") + (BM.labels.length ? ", " : "") 
+  if (BM.id) { document.querySelector('#remove').style.display = 'inline'; }
+}
+
+window.onsubmit = function(ev) {
+  ev.preventDefault();
+  var bm = {}; for (var i in form) bm[i] = form[i].value;
+  BG.Protocol.add(bm, function() { BG.reload(); doClose(); });
+}
+
+function doRemove() { BG.Protocol.remove(BM, function() { BG.reload(); doClose(); }); }
+
+function doClose() { if (onClose) onClose(); else top.close(); }
+
+</script>
+</head>
+<body>
+  <form>
+    <label>URL<input type='text' name='url' /></label>
+    <label>Title<input type='text' name='title' /></label>
+    <label>Labels<input type='text' name='labels' autofocus /></label>
+    <label>Notes<textarea name='annotation' ></textarea></label>
+    <div id=actions >
+      <input id='remove' type='button' value='Remove' style='display:none' onclick='doRemove()' />
+      <!--
+      <a id='remove' href='#' style='display:none' onclick='doRemove()'>Remove</a>
+      -->
+      <input type='button' value='Cancel' onclick='doClose()' />
+      <input type='submit' value='Done' />
+    </div>
+  </form>
+</body>
+</html>

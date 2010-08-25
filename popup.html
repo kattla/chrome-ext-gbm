@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="style.css"/>
+  <link rel="stylesheet" type="text/css" href="popup.css"/>
+  <script type="text/javascript" src="misc/misc.js"></script>
+  <script type="text/javascript" src="core/View.js"></script>
+  <script type="text/javascript" src="core/LabelTree.js"></script>
+  <script type="text/javascript" src="options.js"></script>
+  <script type="text/javascript" src="popup.js"></script>
+</head>
+<body>
+  <div id='body'>
+    <div id='addedit'><a href="javascript:addEdit()">Add bookmark</a></div>
+    <div id='browse-area'>
+      <div id='selector'></div>
+      <div id='label-area' class='labels'></div>
+      <div id='label-toggle' onclick='toggleLabels()'>^</div>
+      <div id='bookmark-area'></div>
+    </div>
+  </div>
+
+  <div id=templates style='display:none'>
+
+    <div class=bm>
+      <img class=favicon alt='' src=''>
+      <div>
+        <div class=title><a target=_blank href=''></a></div>
+        <div class=url></div>
+        <div class=bm-labels></div>
+        <div class=annotation></div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

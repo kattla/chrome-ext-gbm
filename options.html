@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="misc/misc.js"></script>
+<script type="text/javascript" src="misc/Autosuggest.js"></script>
+<script type="text/javascript" src="core/Data.js"></script>
+<script type="text/javascript" src="core/Protocol.js"></script>
+<script type="text/javascript" src="core/LabelTree.js"></script>
+<script type="text/javascript" src="core/View.js"></script>
+<script type="text/javascript" src="options.js"></script>
+<script>
+function reloadBMs() {
+  var bg = chrome.extension.getBackgroundPage();
+  bg.reload();
+}
+function qs(s) { return document.querySelector(s) }
+function one(name) { return qs("[name="+name+"]") }
+window.onload = function() { updateUI(); }
+window.onchange = function() { save(); updateUI(); }
+function save() {
+  function rg(name) { Options.set(name, qs("[name="+name+"]:checked").value); }
+  function cb(name) { Options.set(name, one(name).checked); }
+  function text(name) { Options.set(name, one(name).value); }
+  cb('favicon');
+  rg('bookmark-sort-direction');
+  rg('bookmark-sort-by');
+  rg('label-group-by');
+  text('label-group-separator');
+}
+function updateUI() {
+  function find(name) { return qs('[name='+name+'][value='+Options.get(name)+']') }
+  function cb(name) { one(name).checked = Options.get(name); }
+  function rg(name) { find(name).checked = true; }
+  function text(name) { one(name).value = Options.get(name); }
+  cb('favicon');
+  rg('bookmark-sort-direction');
+  rg('bookmark-sort-by');
+  rg('label-group-by');
+  text('label-group-separator');
+  //one('label-group-separator').disabled = ! qs('[name=label-group][value=separator]').checked;
+}
+</script>
+</head>
+<body>
+  <fieldset><legend>Displaying bookmarks</legend>
+    <p><label><input name=favicon type=checkbox>Show favicons</label></p>
+  </fieldset>
+  <fieldset><legend>Sorting bookmarks</legend>
+    <p>
+      <label><input name=bookmark-sort-direction type=radio value=ascending>Ascending</label>
+      <label><input name=bookmark-sort-direction type=radio value=descending>Descending</label>
+    </p>
+    <p>
+      <label><input name=bookmark-sort-by type=radio value=date>By date</label>
+      <label><input name=bookmark-sort-by type=radio value=title>By title</label>
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>Grouping labels</legend>
+    <p><label><input name=label-group-by type=radio value=prefix>By common prefixes</label></p>
+    <p><label><input name=label-group-by type=radio value=separator>By separator <input name=label-group-separator size=1 value=":"></label></p>
+    <p><label><input name=label-group-by type=radio value=no>Don't group labels</label></p>
+  </fieldset>
+    <p><button onclick="Options.restoreDefaults();updateUI()">Restore default settings</button></p>
+    <p><button onclick="reloadBMs()">Reload bookmarks</button></p>
+    <p><a href='https://www.google.com/bookmarks/l'>Visit Google bookmarks</a></p>
+</body>
+</html>

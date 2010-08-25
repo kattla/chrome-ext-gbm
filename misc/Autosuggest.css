@@ -1,0 +1,10 @@
+div.autosuggest {
+  position: absolute;
+  background: #ffffff;
+  /*border: solid thin;*/
+  cursor: default;
+  font-size: 12px;
+}
+div.autosuggest span { font-weight: bold; }
+div.autosuggest div.active { background: #eeeeff; }
+div.autosuggest div:hover { background: #eeeeff; }

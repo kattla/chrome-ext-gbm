@@ -1,0 +1,107 @@
+* { text-decoration: none; }
+body { margin: 0; }
+div#body {
+  width: 300px;
+  height: 500px;
+  overflow: hidden;
+}
+div#addedit a {
+  display: block;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  color: #000000;
+  font-weight: bold;
+  background: #f5f5ff;
+}
+div#addedit a:hover {
+  background: #ddddff;
+}
+#selector a {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-right: 0;
+  color: #000000;
+  background: #f0f0f0;
+  border-radius: 8px;
+}
+#selector a.positive { background:#eeffee; color: #337733; }
+#selector a.negative { background:#ffeeee; color: #cc5555; }
+#label-area {
+  /*padding: 5px;*/
+  max-height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#label-toggle {
+  text-align: center;
+  height: 15px;
+  color: #aaaaaa;
+  cursor: default;
+}
+#label-toggle:hover { color: #000000; }
+#label-toggle.reverse { -webkit-transform: rotate(180deg); }
+#bookmark-area {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.labels > a, .bm {
+  display: block;
+  white-space: nowrap;
+  color: #000000;
+}
+.labels > a { padding-left: 5px; }
+.labels > a:hover {
+  background: #f0f0f0;
+}
+.labels > a.unlabeled { color: #000000; font-style: italic; }
+.ellipses { margin-left: 1px; color: #aaaaaa; }
+a:hover .ellipses { color: #000000; }
+div.label-buttons {
+  display: inline-block;
+  float: right;
+  padding-top: 2px;
+  padding-right: 10px;
+  font-size: 10px;
+}
+a.yes, a.no {
+  display: inline-block;
+  position: relative;
+  color: #dddddd;
+  background: #ffffff;
+  border: solid thin #eeeeee;
+  border-radius: 3px;
+  text-align: center;
+  width: 15px;
+  margin-left: 1px;
+}
+a.yes { right: 18px; }
+a.no { left: 18px; }
+a.yes:after { content: "+"; }
+a.no:after { content: "-"; }
+a.label:hover a:not(:hover) + a.yes, a.yes:hover {
+  color: #33cc33;
+  background: #eeffee;
+  border-color: #99ff99;
+}
+a a.no:hover {
+  color: #cc5555;
+  background: #ffeeee;
+  border-color: #ffbbbb;
+}
+span.indent { display: inline-block; width: 20px; }
+
+.bm { overflow: hidden; }
+.bm:nth-child(odd) { background: #f0f0f0; }
+.bm:nth-child(even) { background: #ffffff; }
+.bm * { font-size: 10px; color: #999999; }
+.favicon {
+  margin: 2px;
+  vertical-align: top;
+}
+.bm > div { display: inline-block; }
+.bm .title a { font-size: 14px; color: #1100aa;}
+.bm .bm-label { display: inline; }
+.bm-label + .bm-label { margin-left: 10px; }
+.bm .annotation { color: #000000; }
