@@ -4,6 +4,24 @@ var selectedTab = null;
 var template = { };
 
 window.onload = function() {
+  if (BG.Protocol.isOK()) setup(); else {
+    document.querySelector('div#body').style.display = 'none';
+    var node = document.createElement('div');
+    node.innerText = "Loading bookmarks...";
+    node.style.margin = "1em";
+    node.style['white-space'] = 'nowrap';
+    document.body.appendChild(node);
+    BG.reload(function(isOK) {
+      if (isOK) {
+        document.body.removeChild(node);
+        document.querySelector('div#body').style.display = 'block';
+        setup();
+      } else node.innerText = "Please login to your google account.";
+    });
+  }
+}
+
+function setup() {
   chrome.tabs.getSelected(null, function (tab) {
     selectedTab = tab;
     BM = BG.Bookmark.find(function(bm) { return bm.url == tab.url });

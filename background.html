@@ -12,9 +12,12 @@ window.onload = function() {
   chrome.tabs.onUpdated.addListener(function(_,changeInfo) { if(changeInfo.url) updateIcon();});
 }
 
-function reload() {
+function reload(callback) {
   resetState();
-  Protocol.load(function(bms) { updateIcon(); });
+  Protocol.load(function(isOK) {
+    updateIcon();
+    if (callback) callback(isOK);
+  });
 }
 
 function updateIcon() {
