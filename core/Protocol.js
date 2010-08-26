@@ -4,6 +4,8 @@ var GURL = "https://www.google.com/bookmarks/";
 var signature;
 var statusOK = false;
 
+var enc = encodeURIComponent;
+
 this.isOK = function() { return statusOK }
 
 this.load = function(callback) {
@@ -15,7 +17,7 @@ this.load = function(callback) {
 }
 
 this.search = function(query, callback) {
-  var url = GURL + "find?output=rss&num=1000&q=" + encodeURIComponent(query);
+  var url = GURL + "find?output=rss&num=1000&q=" + enc(query);
   var xhr = newXHR('GET', url, function(isOK) {
     var res = [];
     if (isOK) parseRSS(xhr.responseXML, function(bm) { res.push(bm); });
@@ -27,14 +29,14 @@ this.search = function(query, callback) {
 this.add = function(bm, callback) {
   // WARNING: bm is not a real Bookmark object
   needSignature(function() {
-    var data = 'sig=' + signature + '&bkmk=' + bm.url + '&title=' + bm.title + '&labels=' + bm.labels + '&annotation=' + bm.annotation;
+    var data = "sig=" + enc(signature) + "&bkmk=" + enc(bm.url) + "&title=" + enc(bm.title) + "&labels=" + enc(bm.labels) + "&annotation=" + enc(bm.annotation);
     newXHR('POST', GURL+"mark", callback).send(data);
   });
 }
 
 this.remove = function(bm, callback) {
   needSignature(function() {
-    var data = 'sig=' + signature + '&dlq=' + bm.id;
+    var data = 'sig=' + enc(signature) + '&dlq=' + enc(bm.id);
     newXHR('POST', GURL+"mark", callback).send(data);
   });
 }
