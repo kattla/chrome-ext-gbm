@@ -14,6 +14,16 @@ this.load = function(callback) {
   xhr.send(null);
 }
 
+this.search = function(query, callback) {
+  var url = GURL + "find?output=rss&num=1000&q=" + encodeURIComponent(query);
+  var xhr = newXHR('GET', url, function(isOK) {
+    var res = [];
+    if (isOK) parseRSS(xhr.responseXML, function(bm) { res.push(bm); });
+    callback(res);
+  });
+  xhr.send(null);
+}
+
 this.add = function(bm, callback) {
   // WARNING: bm is not a real Bookmark object
   needSignature(function() {

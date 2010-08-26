@@ -1,16 +1,19 @@
 function Bookmark(args) {
-  Bookmark.all.push(this);
-  this.title = args.title || "";
-  this.url = args.url || "";
-  this.timestamp = args.timestamp || 0;
-  this.id = args.id;
-  this.annotation = args.annotation;
-  var labels = [];
-  this.__defineGetter__("labels", function() { return labels });
-  if (!this.id) throw new Error("Missing bookmark id");
-  if (Bookmark.ids[this.id]) throw new Error("Bookmark id is not unique");
-  Bookmark.ids[this.id] = this;
-  Bookmark.unlabeled[this.id] = this;
+  if (!args.id) throw new Error("Missing bookmark id");
+  var self = Bookmark.ids[args.id] || this;
+  self.title = args.title || "";
+  self.url = args.url || "";
+  self.timestamp = args.timestamp || 0;
+  self.annotation = args.annotation;
+  if (self == this) {
+    this.id = args.id;
+    Bookmark.all.push(this);
+    var labels = [];
+    this.__defineGetter__("labels", function() { return labels });
+    Bookmark.ids[this.id] = this;
+    Bookmark.unlabeled[this.id] = this;
+  }
+  return self;
 }
 
 function Label(name) {
@@ -36,8 +39,10 @@ resetState();
 
 Bookmark.prototype.addLabel = function(label) {
   if (this.labels.length == 0) delete Bookmark.unlabeled[this.id];
-  this.labels.push(label);
-  label.bookmarks.push(this);
+  if (this.labels.indexOf(label) == -1) {
+    this.labels.push(label);
+    label.bookmarks.push(this);
+  }
 }
 Label.prototype.addBookmark = function(bm) { bm.addLabel(this); }
 
