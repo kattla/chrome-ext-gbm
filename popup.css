@@ -6,16 +6,31 @@ div#body {
   width: 300px;
   height: 500px;
 }
-div#addedit a {
-  display: block;
-  padding: 10px;
-  text-align: center;
-  text-decoration: none;
-  color: #000000;
-  font-weight: bold;
+div#head {
   background: #f5f5ff;
 }
-div#addedit a:hover {
+div#head input {
+  width: 48%;
+  margin: 1%;
+  border-radius: 8px;
+}
+div#head input:focus { outline: none; }
+div#addedit {
+  width: 50%;
+  display: inline-block;
+}
+div#addedit button {
+  display: block;
+  width: 100%;
+  height: 40px;
+  margin: 0;
+  text-decoration: none;
+  font-size: 16px;
+  color: #000000;
+  background: #f5f5ff;
+  border: none;
+}
+div#addedit button:hover {
   background: #ddddff;
 }
 #selector a {

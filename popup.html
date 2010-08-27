@@ -10,13 +10,15 @@
   <script type="text/javascript" src="popup.js"></script>
 </head>
 <body>
-  <div id='body'>
-    <div id='addedit'><a href="javascript:addEdit()">Add bookmark</a></div>
-    <div id='browse-area'>
-      <div id='selector'></div>
-      <div id='label-area' class='labels'></div>
-      <div id='label-toggle' onclick='toggleLabels()'>^</div>
-      <div id='bookmark-area'></div>
+  <div id=body>
+    <div id=head>
+      <input type=search placeholder="Search" onsearch='doSearch()' /><div id=addedit><button onclick='addEdit()'>Add bookmark</button></div>
+    </div>
+    <div id=browse-area>
+      <div id=selector></div>
+      <div id=label-area class=labels></div>
+      <div id=label-toggle onclick='toggleLabels()'>^</div>
+      <div id=bookmark-area></div>
     </div>
   </div>
 

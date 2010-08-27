@@ -2,6 +2,8 @@ var BG = chrome.extension.getBackgroundPage();
 var BM = null;
 var selectedTab = null;
 var template = { };
+var currentView = null;
+var searchResult = null;
 
 window.onload = function() {
   if (BG.Protocol.isOK()) setup(); else {
@@ -25,7 +27,7 @@ function setup() {
   chrome.tabs.getSelected(null, function (tab) {
     selectedTab = tab;
     BM = BG.Bookmark.find(function(bm) { return bm.url == tab.url });
-    document.querySelector("div#addedit > a").innerText = (BM?'Edit bookmark':'Add bookmark');
+    document.querySelector("div#addedit > button").innerText = (BM?'Edit bookmark':'Add bookmark');
     if (BG.Bookmark.all.length == 0) addEdit();
   });
   document.querySelectorAll("div#templates > *").forEach(function(tmpl) {
@@ -139,33 +141,41 @@ function createBM(bm,container) {
   div.querySelector(".annotation").innerText = bm.annotation;
 }
 
+function showBMs(bms) {
+  var area = document.querySelector('div#bookmark-area');
+  area.innerHTML = '';
+  // We don't want a huge number of bookmarks to make the UI unresponsive -
+  // so we'll add them a few at a time.
+  // The first loop is to avoid "blink" as intervals come with a minimal delay.
+  var i = 0;
+  for (var j = 0; j < 25 && i < bms.length; j++)
+    { createBM(bms[i],area); i++ }
+  showView.interval = window.setInterval(function() {
+    for (var j = 0; j < 25 && i < bms.length; j++)
+      { createBM(bms[i],area); i++ }
+    if (i >= bms.length) window.clearInterval(showView.interval);
+  },0);
+}
+
 function setBMsHeight() {
   var bmArea = document.querySelector('div#bookmark-area');
   bmArea.style.height = (document.body.offsetHeight - bmArea.offsetTop) + "px";
 }
 
 function showView(view) {
+  currentView = view;
   if (showView.interval) window.clearInterval(showView.interval);
   var cont1 = document.querySelector('div#label-area');
   var cont2 = document.querySelector('div#bookmark-area');
   cont1.innerHTML = ''; cont2.innerHTML = '';
+  view = filterViewSearch(view);
   if (!view.tree) {
     view.tree = new LabelTree(view.labels);
     if (!view.parent && BG.noLabel.bookmarks.length) view.tree.children.push(BG.noLabel);
   }
-  createTree(view.tree,cont1,view,0);
+  createTree(view.tree,cont1,currentView,0);
   setBMsHeight();
-  // We don't want a huge number of bookmarks to make the UI unresponsive -
-  // so we'll add them a few at a time.
-  // The first loop is to avoid "blink" as intervals come with a minimal delay.
-  var i = 0;
-  for (var j = 0; j < 25 && i < view.bookmarks.length; j++)
-    { createBM(view.bookmarks[i],cont2); i++ }
-  showView.interval = window.setInterval(function() {
-    for (var j = 0; j < 25 && i < view.bookmarks.length; j++)
-      { createBM(view.bookmarks[i],cont2); i++ }
-    if (i >= view.bookmarks.length) window.clearInterval(showView.interval);
-  },0);
+  showBMs(view.bookmarks);
 }
 
 function toggleLabels() {
@@ -179,4 +189,27 @@ function toggleLabels() {
     toggle.className = 'reverse';
   }
   setBMsHeight();
+}
+
+function doSearch() {
+  var input = document.querySelector('div#head input');
+  var query = input.value.replace(/^\s+|\s+$/g,"");
+  if (query == "") {
+    searchResult = null; showView(currentView);
+  } else {
+    BG.Protocol.search(query, function(res) {
+      searchResult = res; showView(currentView);
+    });
+  }
+}
+
+function filterViewSearch(view) {
+  if (!searchResult) return view;
+  var mark = Date.now();
+  view.bookmarks.forEach(function(bm) { bm.mark = mark; });
+  var bms = searchResult.filter(function(bm) { return bm.mark == mark });
+  bms.forEach(function(bm) { bm.mark = 0; });
+  view = view.filter(function(bm) { return bm.mark == 0; });
+  view.bookmarks = bms;
+  return view;
 }
