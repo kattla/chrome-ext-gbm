@@ -132,6 +132,9 @@ function createBM(bm,container) {
   container.appendChild(div);
   div.oncontextmenu = function() { addEdit(bm); };
   div.querySelector("img").src = "chrome://favicon/"+bm.url;
+  div.title = bm.title
+  if (bm.labels.length) div.title += "\n\n" + bm.labels.join(", ");
+  if (bm.annotation) div.title += "\n\n" + bm.annotation;
   tmp = div.querySelector(".title a"); tmp.href = bm.url; tmp.innerText = bm.title;
   div.querySelector(".url").innerText = bm.url;
   tmp = div.querySelector(".bm-labels");

@@ -25,8 +25,9 @@ function updateIcon() {
     var bm = Bookmark.find(function (x) { return (x.url == tab.url) });
     if (bm) {
       chrome.browserAction.setIcon({ path: "icon_on.png", tabId: tab.id });
-      var tooltip = bm.title + "\n" + bm.labels.join(", ");
-      if (bm.annotation) tooltip += "\n" + bm.annotation;
+      var tooltip = bm.title
+      if (bm.labels.length) tooltip += "\n\n" + bm.labels.join(", ");
+      if (bm.annotation) tooltip += "\n\n" + bm.annotation;
       chrome.browserAction.setTitle({ title: tooltip, tabId: tab.id });
     } else {
       chrome.browserAction.setIcon({ path: "icon_off.png", tabId: tab.id });
