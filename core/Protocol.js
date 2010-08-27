@@ -8,10 +8,13 @@ var enc = encodeURIComponent;
 
 this.isOK = function() { return statusOK }
 
-this.load = function(callback) {
-  var xhr = newXHR('GET', GURL + "?output=rss&num=1000", function(isOK) {
-    if (isOK) parseRSS(xhr.responseXML);
-    if (callback) callback(isOK);
+var load = this.load = function(callback,start) {
+  var url = GURL + "?output=rss&num=1000" + (start ? ("&start=" + start ) : "");
+  var xhr = newXHR('GET', url, function(isOK) {
+    var count = 0;
+    if (isOK) parseRSS(xhr.responseXML, function() { count++; });
+    if (count>=1000) load(callback, (start||0) + 1000);
+    else if (callback) callback(isOK);
   });
   xhr.send(null);
 }
