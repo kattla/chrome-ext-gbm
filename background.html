@@ -28,6 +28,9 @@ function updateIcon() {
       var tooltip = bm.title + "\n" + bm.labels.join(", ");
       if (bm.annotation) tooltip += "\n" + bm.annotation;
       chrome.browserAction.setTitle({ title: tooltip, tabId: tab.id });
+    } else {
+      chrome.browserAction.setIcon({ path: "icon_off.png", tabId: tab.id });
+      chrome.browserAction.setTitle({ title: "", tabId: tab.id });
     }
   });
 }
